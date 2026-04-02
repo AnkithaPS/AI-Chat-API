@@ -45,7 +45,7 @@ const loginUser = async (req: any, res: any) => {
       return res.status(400).json({ error: "Wrong password!" });
     }
     //token generation
-    const token = jwt.sign({ id: req.user }, process.env.JWT_SECRET!, {
+    const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET!, {
       expiresIn: "1d",
     });
     res.status(200).json({ token });

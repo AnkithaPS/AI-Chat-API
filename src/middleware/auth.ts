@@ -22,4 +22,4 @@ const authenticateMiddleware = (
   }
 };
 
-export default authenticateMiddleware;
+export { authenticateMiddleware };
