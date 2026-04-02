@@ -1,0 +1,28 @@
+{
+  "name": "ai-chat-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx app.ts"
+  },
+  "keywords": [],
+  "author": "Ankitha",
+  "license": "ISC",
+  "dependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "dotenv": "^17.4.0",
+    "mongoose": "^9.3.3",
+    "openai": "^6.33.0",
+    "tsx": "^4.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^6.0.2"
+  }
+}
