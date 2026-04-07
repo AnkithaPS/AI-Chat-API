@@ -6,11 +6,11 @@ AI Customer Support Chat API is a backend application that simulates a real-worl
 
 # Key Highlights
 
-- 🔐 Secure authentication using JWT
-- 🤖 AI-powered chat responses
-- 💬 Context-aware conversation handling
-- 📜 Persistent chat history using MongoDB
-- 🏗 Clean and scalable backend architecture
+- Secure authentication using JWT
+- AI-powered chat responses
+- Context-aware conversation handling
+- Persistent chat history using MongoDB
+- Clean and scalable backend architecture
 
 # Features
 
@@ -30,8 +30,8 @@ AI Customer Support Chat API is a backend application that simulates a real-worl
 # Chat History
 
 - Stores all user conversations
-- Retrieve complete chat history
-- Uses last 5 messages for context-aware AI responses
+- Retrieve complete chat history with pagination
+- Uses last 10 messages for context-aware AI responses
 
 # AI Integration
 
@@ -57,13 +57,15 @@ src/
 │ ├── User.ts
 │ └── Chat.ts
 ├── controllers/
-│ ├── authController.ts
+│ ├── userController.ts
 │ └── chatController.ts
 ├── routes/
-│ ├── authRoutes.ts
+│ ├── userRoutes.ts
 │ └── chatRoutes.ts
 ├── middlewares/
 │ └── auth.ts
+| └── errorHandler.ts
+| └── rateLimiter.ts
 ├── services/
 │ └── aiService.ts
 └── app.ts
@@ -92,10 +94,7 @@ Request Body:
 }
 
 Response:
-{
-"\_id": "user_id",
-"email": "user@example.com"
-}
+{ message: "User registered successfully!" }
 
 # Login User
 
@@ -108,15 +107,26 @@ Request Body:
 }
 
 Response:
-{
-"token": "JWT_TOKEN"
-}
+{ message: "User logged in successfully!", token }
 
 # CHAT APIs
 
+# Get sessionId
+
+GET /chat/start-session
+
+Headers:
+Authorization: <JWT_TOKEN>
+
+Response:
+{
+message: "Session created",
+sessionId:"abc_123",
+}
+
 # Send Message to AI
 
-POST /chat
+POST /chat/:sessionId
 
 Headers:
 Authorization: <JWT_TOKEN>
@@ -136,10 +146,27 @@ Response:
 
 # Get Chat History
 
-GET /chat/history
+GET /chat/:sessionId/history
 
 Headers:
 Authorization: <JWT_TOKEN>
+
+Response:
+[
+{
+"message": "My order is delayed",
+"response": "We apologize for the delay...",
+"createdAt": "timestamp"
+}
+]
+
+GET /chat/history/search
+
+Headers:
+Authorization: <JWT_TOKEN>
+
+Request query:
+/chat/history/search?q=order
 
 Response:
 [
@@ -154,6 +181,8 @@ Response:
 
 - Passwords are hashed using bcrypt
 - JWT is used for authentication
+- Rate limiting to prevent API abuse
+- Centralized error handling middleware
 - Protected routes via middleware
 - Environment variables used for sensitive data
 
@@ -178,8 +207,9 @@ Flow:
 1. Register user
 2. Login → get JWT token
 3. Use token in Authorization header
-4. Send chat message
-5. Fetch chat history
+4. Fetch sessionId
+5. Send chat message
+6. Fetch chat history
 
 ---
 

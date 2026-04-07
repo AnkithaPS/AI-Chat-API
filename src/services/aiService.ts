@@ -8,19 +8,25 @@ const openai = new openAI({
 });
 
 const generateReply = async (userMessage: String, history: any[]) => {
+  const formattedHistory = history
+    .sort((a, b) => a.createdAt - b.createdAt) // oldest -> newest
+    .flatMap((chat) => [
+      {
+        role: "user",
+        content: chat.message,
+      },
+      {
+        role: "assistant",
+        content: chat.response,
+      },
+    ]);
   const messages = [
     {
       role: "system",
-      content: "You are a helpful and professional customer support agent.",
+      content:
+        "You are a helpful and professional customer support agent.Stay relevant to the current session only.",
     },
-    ...history.map((chat) => ({
-      role: "user",
-      content: chat.message,
-    })),
-    ...history.map((chat) => ({
-      role: "assistant",
-      content: chat.response,
-    })),
+    ...formattedHistory,
     {
       role: "user",
       content: userMessage,
@@ -28,7 +34,7 @@ const generateReply = async (userMessage: String, history: any[]) => {
   ];
   const response = await openai.chat.completions.create({
     model: "gpt-4.1-mini",
-    messages: messages,
+    messages,
   });
   return response.choices[0].message.content;
 };

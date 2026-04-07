@@ -7,7 +7,11 @@ const chatSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
+    sessionId: {
+      type: String,
+      required: true,
+      index: true,
+    },
     message: {
       type: String,
       required: true,
@@ -19,6 +23,6 @@ const chatSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-
+chatSchema.index({ message: "text" });
 const Chat = mongoose.model("Chat", chatSchema);
 export { Chat };

@@ -1,10 +1,16 @@
 import express from "express";
-import { sendMessage, getHistory } from "../controllers/chatController";
+import {
+  startSession,
+  sendMessage,
+  getHistory,
+  getHistoryBySearch,
+} from "../controllers/chatController";
 import { authenticateMiddleware } from "../middleware/auth";
 
 const chatRouter = express.Router();
-
-chatRouter.post("/", authenticateMiddleware, sendMessage);
-chatRouter.get("/history", authenticateMiddleware, getHistory);
+chatRouter.get("/start-session", authenticateMiddleware, startSession);
+chatRouter.post("/:sessionId", authenticateMiddleware, sendMessage);
+chatRouter.get("/:sessionId/history", authenticateMiddleware, getHistory);
+chatRouter.get("/history/search", authenticateMiddleware, getHistoryBySearch);
 
 export { chatRouter };

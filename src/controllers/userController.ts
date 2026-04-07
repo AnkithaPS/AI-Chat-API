@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 //Register Customer
-const registerUser = async (req: any, res: any) => {
+const registerUser = async (req: any, res: any, next: any) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -26,18 +26,18 @@ const registerUser = async (req: any, res: any) => {
     });
     res.status(201).json({ message: "User registered successfully!" });
   } catch (error) {
-    res.status(500).json({ message: `Failed to register: ${error}` });
+    next(error);
   }
 };
 
 //Login user
-const loginUser = async (req: any, res: any) => {
+const loginUser = async (req: any, res: any, next: any) => {
   try {
     const { email, password } = req.body;
     //check if user exists or not
     const existingUser = await User.findOne({ email: email });
     if (!existingUser) {
-      return res.status(400).json({ error: "User not found" });
+      return res.status(404).json({ error: "User not found" });
     }
     //check password
     const verifyPass = await bcrypt.compare(password, existingUser.password);
@@ -48,9 +48,9 @@ const loginUser = async (req: any, res: any) => {
     const token = jwt.sign({ id: existingUser._id }, process.env.JWT_SECRET!, {
       expiresIn: "1d",
     });
-    res.status(200).json({ token });
+    res.status(200).json({ message: "User logged in successfully!", token });
   } catch (error) {
-    res.status(500).json({ error: `Failed to login: ${error}` });
+    next(error);
   }
 };
 
